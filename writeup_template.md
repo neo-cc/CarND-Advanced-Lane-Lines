@@ -60,7 +60,7 @@ I used a combination of color and gradient thresholds to generate a binary image
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warp()`(code cell [6]) .  The `warper()` function takes as inputs an image (`img`).  I also applied a image mask to mask out outer region of the warped image. The code is from project1 (code cell [8])
+The code for my perspective transform includes a function called `warp()`(code cell [6]) .  The `warp()` function takes as inputs an image (`img`).  I also applied a image mask to mask out outer region of the warped image. The code is from project1 (code cell [8]).
 
 This resulted in the following source and destination points:
 
@@ -77,7 +77,7 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I defined finding_lines() function to detect the lines. The code is from class 33 [Finding the Lines](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/c41a4b6b-9e57-44e6-9df9-7e4e74a1a49a) (code cell [10]). This function slices the picture into 9 windows, then find the peak of the left and right halves of the histogram for each window, then step through the windows one by one. Later, it extracts left and right line pixel positions, fit a second order polynomial to each line and then return the polynomial.
+Then I defined finding_lines() function to detect the lines. The code is from [Finding the Lines](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/c41a4b6b-9e57-44e6-9df9-7e4e74a1a49a) (code cell [10]). This function slices the picture into 9 windows, then find the peak of the left and right halves of the histogram for each window, then step through the windows one by one. Later, it extracts left and right line pixel positions, fit a second order polynomial to each line and then return the polynomial.
 
 If the lines are detected in previous frame, I will use update_finding_lines() to detect lines in new frame (code cell 11). This function takes input as image, and fitted second order polynomial in previous image. 
 Once the lane lines are found in one frame of video, I don't need to search blindly in the next frame. I simply search within a window around the previous detection.
@@ -85,7 +85,7 @@ Once the lane lines are found in one frame of video, I don't need to search blin
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
 I did this in code cell [13] set_radius_of_curvature(). 
-The methed to calculate curvature is from class 35 [Measuring Curvature](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/2f928913-21f6-4611-9055-01744acc344f).
+The methed to calculate curvature is from [Measuring Curvature](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/2f928913-21f6-4611-9055-01744acc344f).
 
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
@@ -104,7 +104,7 @@ Here's a [link to my video result](./output_video/project_video_output.mp4).
 
 For "processing challenge_video.mp4", here is the [result](./output_video/project_video_output_chanllenge.mp4).
 
-For "processing project_video_output_harder_challenge.mp4", here is the [result](./output_video/project_video_output_harder_challenge.mp4)
+For "processing project_video_output_harder_challenge.mp4", here is the [result](./output_video/project_video_output_harder_challenge.mp4).
 
 ---
 
@@ -114,17 +114,17 @@ For "processing project_video_output_harder_challenge.mp4", here is the [result]
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
-I implemented "Sanity Check" in Line() class (code cell [13]), which checked if the new image fitted polynomial is close to previous image's polynomial. If there are different a lot (>500%), the Line.detected flag is set to false. 
+I implemented sanity_check in Line() class (code cell [13]), which checked if the new image fitted polynomial is close to previous image's polynomial. If there are different a lot (>500%), the Line.detected flag is set to false. 
 
-I also checked set_line_base_pos to see if the car is far off the center. If the car is 60cm away from center,  he Line.detected flag is also set to false.
+I also checked set_line_base_pos to see if the car is far off the center. If the car is 60cm away from center,  the Line.detected flag is also set to false.
 
 If Line.detected flag is false, I will reset the Line class and do the line search using finding_lines() with the whole image. 
 
-I also used smoothing to average over the last n frames of video to obtain a cleaner result. Each time I get a new high-confidence measurement, I append it to the list of recent measurements and then take an average over n past measurements to obtain the lane position.
+I also do smoothing to average over the last n frames of video to obtain a cleaner result. Each time I get a new high-confidence measurement, I append it to the list of recent measurements and then take an average over n past measurements to obtain the lane position.
 
-There was not too much issue to process the "project_video.mp4" video. The road is consistant and there was no big variance for the fitted line. The video result looks ok.
+There is not too much issue to process the "project_video.mp4" video. The road is consistant and there was no big variance for the fitted line. The video result looks ok.
 
-The current algorithm is not good at processing challenge or harder challenge video. It's hard to detect lines at the beginning. The finding_lines and sanity check functions need to be improved if given more time. 
+The current algorithm is NOT good at processing challenge or harder challenge video. It's even hard to detect lines at the beginning. The finding_lines and sanity check functions need to be improved if given more time. 
 
 
 
