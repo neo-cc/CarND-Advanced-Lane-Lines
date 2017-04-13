@@ -12,14 +12,14 @@ The goals / steps of this project are the following:
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 [//]: # (Image References)
-[image0]: ./camera_cal/calibration1.jpg "Original Camera"
+[image0]: ./camera_cal/calibration1.jpg "Original Camera" 
 [image01]: ./output_images/undistorted/camera/calibration1.jpg "Calibration"
 
 [image1]: ./test_images/test5.jpg "Test Image"
 [image11]: ./output_images/undistorted/test5.jpg "Road Transformed"
 [image12]: ./output_images/threshold/test5.jpg "Binary Example"
 [image13]: ./output_images/warped/test5.jpg "Warp Example"
-[image14]: ./examples/color_fit_lines.jpg "Fit Visual"
+[image14]: ./output_images/stage2/test5.jpg "Fit Visual"
 
 [video1]: ./project_video.mp4 "Test Video"
 
@@ -52,72 +52,63 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 After distortion-correction, the image look like this:
 ![Road Transformed][image11]
 
-[image11]
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of color and gradient thresholds to generate a binary image (code cell [4], the code is from Udacity Course directly).  Here's an example of my output for this step. 
 
-[][[image12]]
+![Binary Example][image12]
 
-####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warp()`(code cell [6]) .  The `warper()` function takes as inputs an image (`img`).  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `warp()`(code cell [6]) .  The `warper()` function takes as inputs an image (`img`).  I also applied a image mask to mask out outer region of the warped image. The code is from project1 (code cell [8])
 
-```
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-
-```
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 150, 720      | 300, 720      | 
+| 490, 450      | 300, 0        |
+| 690, 450      | 980, 0        |
+| 1130, 720     | 980, 720      |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+![alt text][image13]
 
-####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+Then I defined finding_lines() function to detect the lines. The code is from class 33 [Finding the Lines](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/c41a4b6b-9e57-44e6-9df9-7e4e74a1a49a) (code cell [10]). This function slices the picture into 9 windows, then find the peak of the left and right halves of the histogram for each window, then step through the windows one by one. Later, it extracts left and right line pixel positions, fit a second order polynomial to each line and then return the polynomial.
 
-![alt text][image5]
+If the lines are detected in previous frame, I will use update_finding_lines() to detect lines in new frame (code cell 11). This function takes input as image, and fitted second order polynomial in previous image. 
 
-####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+I did this in code cell [13] set_radius_of_curvature(). The methed to calculate curvature is from class 35 [Measuring Curvature](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/2b62a1c3-e151-4a0e-b6b6-e424fa46ceab/lessons/40ec78ee-fb7c-4b53-94a8-028c5c60b858/concepts/2f928913-21f6-4611-9055-01744acc344f).
+
+
+#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
 I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
 
-![alt text][image6]
+![alt text][image14]
 
 ---
 
-###Pipeline (video)
+### Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./output_video/project_video_output.mp4)
+
+For processing challenge_video.mp4, here is the [result](./output_video/project_video_output_chanllenge.mp4)
+For processing project_video_output_harder_challenge.mp4, here is the [result](./output_video/project_video_output_harder_challenge.mp4)
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
