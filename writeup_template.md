@@ -12,7 +12,7 @@ The goals / steps of this project are the following:
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 [//]: # (Image References)
-[image0]: ./output_images/calibration1.jpg "Original Camera"
+[image0]: ./camera_cal/calibration1.jpg "Original Camera"
 [image01]: ./output_images/undistorted/camera/calibration1.jpg "Calibration"
 
 [image1]: ./test_images/test5.jpg "Test Image"
@@ -24,15 +24,15 @@ The goals / steps of this project are the following:
 [video1]: ./project_video.mp4 "Test Video"
 
 
-## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+## [Rubric Points](https://review.udacity.com/#!/rubrics/571/view) 
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-###Camera Calibration
+### Camera Calibration
 
-####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
+#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the code cell [1] of the IPython notebook located in "P4.ipynb".  
 
@@ -43,14 +43,14 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 ![Original Camera][image0]
 ![Calibration][image01]
 
-###Pipeline (single images)
+### Pipeline (single images)
 
-####1. Provide an example of a distortion-corrected image.
+#### 1. Provide an example of a distortion-corrected image.
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
 ![Test Image][image1]
 
 After distortion-correction, the image look like this:
-[Road Transformed][image11]
+![Road Transformed][image11]
 
 [image11]
 ####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
