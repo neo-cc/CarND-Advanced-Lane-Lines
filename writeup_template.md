@@ -122,6 +122,9 @@ If Line.detected flag is false, I will reset the Line class and do the line sear
 
 I also do smoothing to average over the last n frames of video to obtain a cleaner result. Each time I get a new high-confidence measurement, I append it to the list of recent measurements and then take an average over n past measurements to obtain the lane position.
 
+The algorithm does not perform well when shadows or color changes are present. Later I found out color binary image is not correctly executed. Then I adjusted the s_thresh=(170, 220) and added code to detect yellow line in the image. 
+
+
 There is not too much issue to process the "project_video.mp4" video. The road is consistant and there was no big variance for the fitted line. The video result looks ok.
 
 The current algorithm is NOT good at processing challenge or harder challenge video. It's even hard to detect lines at the beginning. The finding_lines and sanity check functions need to be improved if given more time. 
